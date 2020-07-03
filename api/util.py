@@ -29,10 +29,10 @@ def is_login(func):
             rstr = request.GET.get('rstr')
         if check_content(uid, key, rstr):
             try:
-                token = Token.objects.filter(user_id = int(uid)).first().key
+                token = Token.objects.filter(user_id=int(uid)).first().key
             except Exception as e:
                 print(f'get token error, {e}')
-                return JsonResponse({"error": 10008})
+                return JsonResponse({"error_code": 10008})
             md5 = hashlib.md5()
             md5.update((uid + rstr + token).encode('utf-8'))
             key_a = md5.hexdigest()
@@ -40,14 +40,14 @@ def is_login(func):
             if key_a == key:
                 return func(*args, **kwargs)
             else:
-                return JsonResponse({"error": 10008})
+                return JsonResponse({"error_code": 10008})
         else:
-            return JsonResponse({"error": 10001})
+            return JsonResponse({"error_code": 10001})
     return wrapper
 
 
 if __name__ == '__main__':
-    print(check_content('a','b'))
+    print(check_content('a', 'b'))
     print(check_content('a', ''))
     print(check_content('a', None))
     print(check_content('a', 0))

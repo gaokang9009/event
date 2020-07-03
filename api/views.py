@@ -176,14 +176,24 @@ def get_eventlist(request):
     if event_type not in ['', None]:
         events = events.filter(type=event_type)
     if event_price not in ['', None]:
-        events = events.filter(price__lte=int(event_price))
+        try:
+            event_price = int(event_price)
+        except Exception as e:
+            print('event_price is not a int, ', e)
+            event_price = -1
+        events = events.filter(price__lte=event_price)
     if event_status not in ['', None]:
+        try:
+            event_status = int(event_price)
+        except Exception as e:
+            print('event_status is not a int, ', e)
+            event_status = -1
         events = events.filter(status=int(event_status))
     if events:
         event_list = []
         for e in events:
-            event_list.append({'id':e.id, 'title':e.title, 'status':e.status, 'type':e.type, 'price':e.price})
-        result = {'event_list':event_list, 'error_code':0, 'count':len(event_list)}
+            event_list.append({'id': e.id, 'title': e.title, 'status': e.status, 'type': e.type, 'price': e.price})
+        result = {'event_list': event_list, 'error_code': 0, 'count': len(event_list)}
     else:
         result = {'error_code': 10016}
     return JsonResponse(result)
